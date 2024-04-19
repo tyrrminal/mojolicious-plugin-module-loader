@@ -44,6 +44,10 @@ with two supprted keys:
 
 ArrayRef of namespaces to automatically call L</add_command_namespace> on
 
+=head4 controller_namespaces
+
+ArrayRef of namespaces to automatically call L</add_controller_namespace> on
+
 =head4 plugin_namespaces
 
 ArrayRef of namespaces to automatically call L</add_plugin_namespace> on
@@ -54,6 +58,11 @@ Adds the given namespace to the Mojolicious Commands
 L<namespaces|https://metacpan.org/pod/Mojolicious::Commands#namespaces> array. 
 Packages inheriting from L<Mojolicious::Command> in these namespaces are loaded
 as runnable commands from the mojo entrypoint script.
+
+=head2 add_controller_namespace( $str )
+
+Adds the given namespace to the Mojolicious routes 
+L<namespaces|https://metacpan.org/pod/Mojolicious::Routes#namespaces> array.
 
 =head2 add_plugin_namespace( $str )
 
@@ -72,12 +81,17 @@ sub register($self, $app, $conf) {
     push($app->commands->namespaces->@*, $ns);
   });
 
+  $app->helper(add_controller_namespace => sub($c, $ns) {
+    push($app->routes->namespaces->@*, $ns);
+  });
+
   $app->helper(add_plugin_namespace => sub($c, $ns) {
     $app->plugin($_) foreach (map { Module::Find::findallmod($_) }  $ns);
   });
 
-  $app->add_command_namespace($_) foreach(($conf->{command_namespaces}//[])->@*);
-  $app->add_plugin_namespace($_) foreach(($conf->{plugin_namespaces}//[])->@*);
+  $app->add_command_namespace($_)    foreach(($conf->{command_namespaces}   //[])->@*);
+  $app->add_controller_namespace($_) foreach(($conf->{controller_namespaces}//[])->@*);
+  $app->add_plugin_namespace($_)     foreach(($conf->{plugin_namespaces}    //[])->@*);
 }
 
 =head1 AUTHOR
