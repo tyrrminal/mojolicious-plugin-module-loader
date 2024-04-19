@@ -36,6 +36,10 @@ with two supprted keys:
 
 ArrayRef of namespaces to automatically call ["add\_command\_namespace"](#add_command_namespace) on
 
+#### controller\_namespaces
+
+ArrayRef of namespaces to automatically call ["add\_controller\_namespace"](#add_controller_namespace) on
+
 #### plugin\_namespaces
 
 ArrayRef of namespaces to automatically call ["add\_plugin\_namespace"](#add_plugin_namespace) on
@@ -46,6 +50,11 @@ Adds the given namespace to the Mojolicious Commands
 [namespaces](https://metacpan.org/pod/Mojolicious::Commands#namespaces) array. 
 Packages inheriting from [Mojolicious::Command](https://metacpan.org/pod/Mojolicious%3A%3ACommand) in these namespaces are loaded
 as runnable commands from the mojo entrypoint script.
+
+## add\_controller\_namespace( $str )
+
+Adds the given namespace to the Mojolicious routes 
+[namespaces](https://metacpan.org/pod/Mojolicious::Routes#namespaces) array.
 
 ## add\_plugin\_namespace( $str )
 
