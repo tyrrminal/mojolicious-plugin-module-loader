@@ -19,11 +19,21 @@ Mojolicious::Plugin::Module::Loader - Automatically load mojolicious namespaces
 =cut
 
 use Mojo::Base 'Mojolicious::Plugin';
+use Module::Find;
 
 use experimental qw(signatures);
 
-sub register($self, $app, $app_config) {
+sub register($self, $app, $conf) {
+  $app->helper(add_command_namespace => sub($c, $ns) {
+    push($app->commands->namespaces->@*, $ns);
+  });
 
+  $app->helper(add_plugin_namespace => sub($c, $ns) {
+    $app->plugin($_) foreach (map { Module::Find::findallmod($_) }  $ns);
+  });
+
+  $app->add_command_namespace($_) foreach(($conf->{command_namespaces}//[])->@*);
+  $app->add_plugin_namespace($_) foreach(($conf->{plugin_namespaces}//[])->@*);
 }
 
 =head1 AUTHOR
