@@ -12,9 +12,53 @@ Mojolicious::Plugin::Module::Loader - Automatically load mojolicious namespaces
  
 =head1 SYNOPSIS
 
+    $app->plugin('Module::Loader' => {
+      command_namespaces => ['MyApp::Command'],
+      plugin_namespaces  => ['MyApp::Plugin']
+    });
+
+    # Or
+    $app->plugin('Module::Loader');
+    ...
+    $app->add_command_namespace('Dynamically::Loaded::Module::Command');
+    $app->add_plugin_namespace('Dynamically::Loaded::Module::Plugin');
+
 =head1 DESCRIPTION
 
+This module simply adds two mojolicious helpers, L</add_command_namespace> and
+L</add_plugin_namespace>, and calls these automatically at registration time
+on the contents of the C<command_namespaces> and C<plugin_namespaces> configuration
+parameters, respectively.
+
 =head1 METHODS
+
+L<Mojolicious::Plugin::Cron::Scheduler> inherits all methods from 
+L<Mojolicious::Plugin> and implements the following new ones
+
+=head2 register( \%config )
+
+Register plugin in L<Mojolicious> application. Accepts a HashRef of parameters
+with two supprted keys:
+
+=head4 command_namespaces
+
+ArrayRef of namespaces to automatically call L</add_command_namespace> on
+
+=head4 plugin_namespaces
+
+ArrayRef of namespaces to automatically call L</add_plugin_namespace> on
+
+=head2 add_command_namespace( $str )
+
+Adds the given namespace to the Mojolicious Commands 
+L<namespaces|https://metacpan.org/pod/Mojolicious::Commands#namespaces> array. 
+Packages inheriting from L<Mojolicious::Command> in these namespaces are loaded
+as runnable commands from the mojo entrypoint script.
+
+=head2 add_plugin_namespace( $str )
+
+Searches the given namespace for packages inheriting from L<Mojolicious::Plugin>
+and loads them via L<https://metacpan.org/pod/Mojolicious#plugin>
 
 =cut
 
